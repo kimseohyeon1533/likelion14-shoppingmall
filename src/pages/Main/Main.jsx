@@ -2,8 +2,9 @@ import styled from "styled-components";
 import sortIcon from "../../assets/icons/Icon_2.png";
 import vectorIcon from "../../assets/icons/Vector.png"; 
 import {useNavigate} from "react-router-dom";
+import { getProducts } from "../../utils/productStore.js";
 import { useEffect, useState } from "react";
-import { getProducts } from "../../utils/productStore";
+import { getItems } from "../../api/shop";
 
 const MainContainer = styled.div`
     padding: 40px 158px;
@@ -228,6 +229,7 @@ const filterOptions = {
 };
 
 export default function Main() {
+    const navigate = useNavigate();
 
     const [activeFilter, setActiveFilter] = useState(null);
     const [sortOpen, setSortOpen] = useState(false);
@@ -235,7 +237,20 @@ export default function Main() {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        setItems(getProducts());
+        let cancelled = false;
+
+        (async () => {
+            try {
+                const res = await getItems("clothes");
+                if (!cancelled) setItems(Array.isArray(res) ? res : []);
+            } catch {
+                if (!cancelled) setItems([]);
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     const openModal = (filterName) => setActiveFilter(filterName);
@@ -247,7 +262,7 @@ export default function Main() {
         setSelectedSort(option);
         setSortOpen(false);
     };
-        const navigate=useNavigate();
+       
 
     
     return (
@@ -293,18 +308,19 @@ export default function Main() {
             </FilterRow>
 
  
-            <ProductGrid>
-                {items.map((item) => (
-                    <ProductCard key={item.id} onClick={()=>navigate(`/item/${item.id}`)}>
-                        <ProductImage src={item.image} alt={item.name} />
-                        <ProductInfo>
-                            <ProductName>{item.name}</ProductName>
-                            <ProductPrice>{item.price}</ProductPrice>
-                            <ProductSub>리뷰 {item.review}</ProductSub>
-                        </ProductInfo>
-                    </ProductCard>
-                ))}
-            </ProductGrid>
+        <ProductGrid>
+    {items.map((item) => (
+        <ProductCard key={item.id} onClick={() => navigate(`/item/${item.id}`)}>
+            <ProductImage src={item.image} alt={item.name} />
+
+            <ProductInfo>
+                <ProductName>{item.name}</ProductName>
+                <ProductPrice>{item.price}</ProductPrice>
+                <ProductSub>리뷰 {item.review}</ProductSub>
+            </ProductInfo>
+        </ProductCard>
+    ))}
+</ProductGrid>
 
             {activeFilter && (
     <Overlay onClick={closeModal}>
