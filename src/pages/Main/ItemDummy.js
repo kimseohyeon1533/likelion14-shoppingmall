@@ -7,7 +7,7 @@ import imageUrl5 from "../../assets/images/image 7.png";
 export const defaultItems = [
   {
     id: 1,
-    name: "아이앱 스튜디오 25 후드 라이트 블루",
+    name: "아이앱 스튜디오 25 후드 라이트 그레이",
     price: "145,000원",
     rating: "4.6",
     review: "1,561",
@@ -57,7 +57,7 @@ export const defaultItems = [
     id: 5,
     name: "나이키 에어 그레이하운드 25",
     price: "235,000원",
-    rating: "4.7",
+    rating: "4.3",
     review: "231",
     size: "9",
     type: "신발",
